@@ -1,8 +1,7 @@
-<?php
+<?php // tag pembuka php
 
-use Illuminate\Support\Facades\Route; // mengimpor kelas Route untuk mendefinisikan rute
-use App\Http\Controllers\ItemController; // mengimpor ItemController untuk menangani permintaan terkait item
-use App\Http\Controllers\UserProfileController;
+use Illuminate\Support\Facades\Route; // mengimpor fasad Route untuk mendefinisikan rute
+use App\Http\Controllers\ItemController; // mengimport ItemController
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,14 +13,8 @@ use App\Http\Controllers\UserProfileController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', function () { // mendefinisikan route untuk halaman utama (root)
+    return view('welcome'); // mengembalikan tampilan 'welcome' di view welcome.blade.php
 });
-Route::resource('items', ItemController::class); // resource controller dengan nama items dari controller ItemController
 
-Route::get('/user/profile', function () {
-    return 'selamat datang';
-   })->name('profile');
-
-   Route::get('/user/profile',[UserProfileController::class, 'index']
-   )->name('profile');
+Route::resource('items', ItemController::class); // membuat route resource (CRUD) dengan controller ItemController 
