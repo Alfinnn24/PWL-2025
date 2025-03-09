@@ -74,3 +74,43 @@ database, sehingga web hanya menampilkan username,nama dan level_id.
 karna data yang dicari tidak ditemukan maka data tersebut akan dimasukkan ke database dan berhasil karena sudah dilakukan save menggunakan fungsi save(), sehingga web akan menampilkan daata tersebut.
 
 # Praktikum 2.5 – Attribute Changes
+
+<img src = "image-17.png">
+
+web akan menampilkan console dengan nilai false, dikarenakan tidak ada perubahan pada data tersebut sebelum dan setelah masuk kedalam database.
+
+<img src = "image-18.png">
+
+web akan menampilkan console dengan nilai true, dikarenakan terdapat perubahan pada username.
+
+# Praktikum 2.6 – Create, Read, Update, Delete (CRUD)
+
+<img src = "image-19.png">
+
+web akan menampilkan seluruh data dari table user dan terdapat link untuk melakukan tambah, edit dan hapus data.
+
+<img src = "image-20.png">
+
+web akan menampilkan error setelah menekan tombol tambah user hal ini terjadi karena route pada action form tidak ditemukan.
+
+<img src = "image-22.png">
+
+data web yang diinputkan pada form akan tersimpan pada database dan tampil pada tampilan web.
+
+<img src = "image-23.png">
+
+<img src = "image-24.png">
+
+method ini mencari pengguna berdasarkan ID dan menghapusnya dari database. setelah pengguna dihapus, pengguna diarahkan kembali ke halaman daftar pengguna.
+
+# Praktikum 2.7 – Relationships
+
+<img src = "image-25.png">
+
+web akan menampilkan informasi proses yang dilakukan di dalam userController yaitu mengembalikan sekumpulan data.
+
+<img src = "image-26.png">
+
+web akan menampilkan seluruh data dari table user beserta menampilkan 2 kolom dari table m_levels yaitu kolom level_kode dan level_nama.
+
+
