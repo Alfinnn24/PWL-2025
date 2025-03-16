@@ -3,14 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\UserModel;
+use App\Models\LevelModel;
 use Illuminate\Http\Request;
+use App\DataTables\UserDataTable;
 use Illuminate\Support\Facades\Hash;
+
 
 class UserController extends Controller
 {
 
-    public function index()
+    public function index(UserDataTable $dataTable)
     {
+
         // $user = UserModel::find(1);
         // $user = UserModel::where('level_id', 1)->first();
         // $user = UserModel::firstWhere('level_id', 1);
@@ -102,34 +106,45 @@ class UserController extends Controller
         // $user = UserModel::with('level')->get();
         // dd($user);
 
-        $user = UserModel::with('level')->get();
-        return view('user', ['data' => $user]);
+        // $user = UserModel::with('level')->get();
+        // return view('user', ['data' => $user]);
 
+        return $dataTable->render('user.user');
     }
 
-    public function tambah()
+    public function create()
     {
-        return view('user_tambah');
+        $levels = LevelModel::all();
+        return view('user.form', compact('levels'));
     }
 
-    public function tambah_simpan(Request $request)
+    public function store(Request $request)
     {
+        $request->validate([
+            'level_id' => 'required|exists:m_level,level_id',
+            'username' => 'required|string|max:20',
+            'nama' => 'required|string|max:100',
+            'password' => 'required|string',
+        ]);
+
         UserModel::create([
+            'level_id' => $request->level_id,
             'username' => $request->username,
             'nama' => $request->nama,
             'password' => Hash::make($request->password),
-            'level_id' => $request->level_id
         ]);
-        return redirect('/user');
+
+        return redirect()->route('users.index')->with('success', 'User berhasil dibuat');
     }
 
-    public function ubah($id)
+    public function edit($id)
     {
         $user = UserModel::find($id);
-        return view('user_ubah', ['data' => $user]);
+        $levels = LevelModel::all();
+        return view('user.form', compact('user', 'levels'));
     }
 
-    public function ubah_simpan(Request $request, $id)
+    public function update(Request $request, $id)
     {
         $user = UserModel::find($id);
 
@@ -140,14 +155,13 @@ class UserController extends Controller
 
         $user->save();
 
-        return redirect('/user');
+        return redirect('/users');
     }
-
-    public function hapus($id)
+    public function destroy($id)
     {
         $user = UserModel::find($id);
         $user->delete();
-
-        return redirect('/user');
+        
+        return redirect('/users');
     }
 }
