@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\LevelModel;
 use App\Models\UserModel;
+use Dotenv\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\DataTables;
@@ -151,5 +152,131 @@ class UserController extends Controller
             return redirect('/user')->with('error', 'Data user gagal dihapus karena masih terdapat tabel lain yang terkait dengan data ini'); 
         }
 
+    }
+     // jobsheet 6
+     public function create_ajax() 
+     {
+         $level = LevelModel::select('level_id', 'level_nama')->get();
+ 
+         return view('user.create_ajax')
+         ->with('level', $level);
+     }
+
+     public function store_ajax(Request $request)
+     {
+         if ($request->ajax() || $request->wantsJson()) {
+             $rules = [
+                 'level_id' => 'required|integer',
+                 'username' => 'required|string|min:3|unique:m_user,username',
+                 'nama' => 'required|string|max:100',
+                 'password'=> 'required|min:6'
+             ];
+ 
+             $validator = Validator::make($request->all(), $rules);
+ 
+             if ($validator->fails()) {
+                 return response()->json([
+                     'status' => false,
+                     'message' => 'Validasi Gagal',
+                     'msgField'=> $validator->errors(),
+                 ]);
+             }
+ 
+             UserModel::create($request->all());
+             return response()->json([
+                 'status'=> true,
+                 'message'=> 'Data user berhasil disimpan'
+             ]);
+         }
+         redirect('/');
+     }
+
+    public function edit_ajax(string $id) {
+        $user = UserModel::find($id);
+        $level = LevelModel::select('level_id', 'level_nama')->get();
+
+        return view('user.edit_ajax', ['user' => $user,'level'=> $level]);
+    }
+
+    public function update_ajax(Request $request, $id)
+    {
+         // Cek apakah request berasal dari AJAX atau menginginkan JSON response
+         if ($request->ajax() || $request->wantsJson()) {
+             $rules = [
+                 'level_id'  => 'required|integer',
+                 'username'  => 'required|max:20|unique:m_user,username,' . $id . ',user_id',
+                 'nama'      => 'required|max:100',
+                 'password'  => 'nullable|min:6|max:20'
+             ];
+     
+             // Validasi input
+             $validator = Validator::make($request->all(), $rules);
+     
+             if ($validator->fails()) {
+                 return response()->json([
+                     'status'   => false, // Respon JSON, true: berhasil, false: gagal
+                     'message'  => 'Validasi gagal.',
+                     'msgField' => $validator->errors() // Menampilkan field yang error
+                 ]);
+             }
+     
+             // Cek apakah user dengan ID yang diberikan ada dalam database
+             $user = UserModel::find($id);
+     
+             if ($user) {
+                 // Jika password tidak diisi, hapus dari request agar tidak diupdate
+                 if (!$request->filled('password')) {
+                     $request->request->remove('password');
+                 }
+     
+                 // Update data user
+                 $user->update($request->all());
+     
+                 return response()->json([
+                     'status'  => true,
+                     'message' => 'Data berhasil diperbarui'
+                 ]);
+             } else {
+                 return response()->json([
+                     'status'  => false,
+                     'message' => 'Data tidak ditemukan'
+                 ]);
+             }
+         }
+     
+         return redirect('/');
+     }
+
+    public function confirm_ajax(string $id){
+        $user = UserModel::find($id);
+
+        return view('user.confirm_ajax', ['user' =>$user]);
+    }
+
+    public function delete_ajax(Request $request, $id)
+     {
+         //cek apakah req dari ajax
+         if($request->ajax() || $request->wantsJson()){
+             $user = UserModel::find($id);
+             if($user){
+                 $user->delete();
+                 return response()->json([
+                     'status'=> true,
+                     'message'=> 'Data berhasil dihapus'
+                 ]);
+             }else{
+                 return response()->json([
+                     'status'=> false,
+                     'message'=> 'Data tidak ditemuka'
+                 ]);
+             }
+         } 
+         return redirect('/');   
+     }
+
+     public function show_ajax(string $id)
+    {
+        $user = UserModel::find($id);
+        return view('user.show_ajax', ['user' => $user]);
     }
 }
