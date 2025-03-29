@@ -9,9 +9,10 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('m_barang', function (Blueprint $table) {
+        if (!Schema::hasTable('m_barang')) {
+            Schema::create('m_barang', function (Blueprint $table) {
             $table->id('barang_id');
             $table->unsignedBigInteger('kategori_id')->index();
             $table->string('barang_kode', 10)->unique();
@@ -22,6 +23,7 @@ return new class extends Migration
 
             $table->foreign('kategori_id')->references('kategori_id')->on('m_kategori');
         });
+    }
     }
 
     /**

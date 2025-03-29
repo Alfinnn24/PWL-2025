@@ -16,25 +16,22 @@ class SupplierSeeder extends Seeder
         DB::table('m_supplier')->insert([
             [
                 'supplier_kode' => 'SUP001',
-                'supplier_nama' => 'PT Sumber Berkah',
-                'supplier_alamat' => 'Jl. Merdeka No. 10, Jakarta',
-                'supplier_telepon' => '081234567890',
+                'supplier_nama' => 'PT Sumber Rejeki',
+                'supplier_alamat' => 'Jl. Sudirman No. 10, Jakarta',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'supplier_kode' => 'SUP002',
-                'supplier_nama' => 'CV Maju Jaya',
-                'supplier_alamat' => 'Jl. Mawar No. 15, Bandung',
-                'supplier_telepon' => '082345678901',
+                'supplier_nama' => 'CV Jaya Agung',
+                'supplier_alamat' => 'Jl. Suroyo No. 9, Bogor',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'supplier_kode' => 'SUP003',
-                'supplier_nama' => 'UD Sejahtera',
-                'supplier_alamat' => 'Jl. Melati No. 20, Surabaya',
-                'supplier_telepon' => '083456789012',
+                'supplier_nama' => 'UD Tambak Sari',
+                'supplier_alamat' => 'Jl. Laut No. 6, Probolinggo',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]

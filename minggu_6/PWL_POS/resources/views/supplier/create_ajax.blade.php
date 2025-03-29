@@ -9,19 +9,21 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label>Supplier Kode</label>
-                    <input value="" type="text" name="supplier_kode" id="supplier_kode" class="form-control" required>
-                    <small id="error-supplier-kode" class="error-text form-text text-danger"></small>
+                    <label>Kode Supplier</label>
+                    <input value="" type="text" name="supplier_kode" id="supplier_kode" class="form-control"
+                        required>
+                    <small id="error-supplier_kode" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
-                    <label>Supplier Nama</label>
-                    <input value="" type="text" name="supplier_nama" id="supplier_nama" class="form-control" required>
-                    <small id="error-supplier-nama" class="error-text form-text text-danger"></small>
+                    <label>Nama Supplier</label>
+                    <input value="" type="text" name="supplier_nama" id="supplier_nama" class="form-control"
+                        required>
+                    <small id="error-supplier_nama" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
                     <label>Alamat</label>
-                    <input value="" type="text" name="supplier_alamat" id="supplier_alamat" class="form-control" required>
-                    <small id="error-supplier-alamat" class="error-text form-text text-danger"></small>
+                    <textarea name="supplier_alamat" id="supplier_alamat" class="form-control" rows="3" required></textarea>
+                    <small id="error-supplier_alamat" class="error-text form-text text-danger"></small>
                 </div>
             </div>
             <div class="modal-footer">
@@ -32,36 +34,45 @@
     </div>
 </form>
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         $("#form-tambah").validate({
             rules: {
-                supplier_kode: { required: true, minlength: 3, maxlength: 20 },
-                supplier_nama: { required: true, minlength: 3, maxlength: 100 },
-                supplier_alamat: { required: true, minlength: 3, maxlength: 100 }
+                supplier_kode: {
+                    required: true,
+                    maxlength: 10
+                },
+                supplier_nama: {
+                    required: true,
+                    maxlength: 100
+                },
+                supplier_alamat: {
+                    required: true,
+                    maxlength: 255
+                }
             },
-            submitHandler: function (form) {
+            submitHandler: function(form) {
                 $.ajax({
                     url: form.action,
                     type: form.method,
                     data: $(form).serialize(),
-                    success: function (response) {
+                    success: function(response) {
                         if (response.status) {
                             $('#myModal').modal('hide');
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Berhasil',
-                                text: response.message
+                                text: response.messages
                             });
                             dataSupplier.ajax.reload();
                         } else {
                             $('.error-text').text('');
-                            $.each(response.msgField, function (prefix, val) {
-                                $('#error-'+prefix).text(val[0]);
+                            $.each(response.msgfield, function(prefix, val) {
+                                $('#error-' + prefix).text(val[0]);
                             });
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Terjadi Kesalahan',
-                                text: response.message
+                                text: response.messages
                             });
                         }
                     }
@@ -69,14 +80,14 @@
                 return false;
             },
             errorElement: 'span',
-            errorPlacement: function (error, element) {
+            errorPlacement: function(error, element) {
                 error.addClass('invalid-feedback');
                 element.closest('.form-group').append(error);
             },
-            highlight: function (element, errorClass, validClass) {
+            highlight: function(element, errorClass, validClass) {
                 $(element).addClass('is-invalid');
             },
-            unhighlight: function (element, errorClass, validClass) {
+            unhighlight: function(element, errorClass, validClass) {
                 $(element).removeClass('is-invalid');
             }
         });
