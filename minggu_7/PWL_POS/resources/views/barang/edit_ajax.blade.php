@@ -3,8 +3,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Kesalahan</h5>
-                <button type="button" class="close" data-dismiss="modal" aria- label="Close"><span
-                        aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <div class="alert alert-danger">
@@ -23,10 +24,21 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Edit Data Barang</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria- label="Close"><span
-                            aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
+                    <div class="form-group">
+                        <label>Kategori</label>
+                        <select name="kategori_id" id="kategori_id" class="form-control" required>
+                            <option value="">- Pilih Kategori -</option>
+                            @foreach ($kategori as $k)
+                                <option value="{{ $k->kategori_id }}" {{ ($k->kategori_id == $barang->kategori_id) ? 'selected' : '' }}>{{ $k->kategori_nama }}</option>
+                            @endforeach
+                        </select>
+                        <small id="error-kategori-id" class="error-text form-text text-danger"></small>
+                    </div>
                     <div class="form-group">
                         <label>Kode Barang</label>
                         <input value="{{ $barang->barang_kode }}" type="text" name="barang_kode" id="barang_kode"
@@ -40,45 +52,35 @@
                         <small id="error-barang-nama" class="error-text form-text text-danger"></small>
                     </div>
                     <div class="form-group">
-                        <label>Kategori Barang</label>
-                        <select name="kategori_id" id="kategori_id" class="form-control" required>
-                            <option value="">- Pilih Kategori -</option>
-                            @foreach($kategori as $l)
-                                <option value="{{ $l->kategori_id }}" {{ $barang->kategori_id == $l->kategori_id ? 'selected' : '' }}>{{ $l->kategori_nama }}</option>
-                            @endforeach
-                        </select>
-                        <small id="error-kategori_id" class="error-text form-text text-danger"></small>
-                    </div>
-                    <div class="form-group">
                         <label>Harga Beli</label>
                         <input value="{{ $barang->harga_beli }}" type="text" name="harga_beli" id="harga_beli"
                             class="form-control" required>
-                        <small id="error-harga-beli" class="error-text form-text text-danger"></small>
+                        <small id="error-barang-beli" class="error-text form-text text-danger"></small>
                     </div>
                     <div class="form-group">
                         <label>Harga Jual</label>
-                        <input value="{{ $barang->harga_jual }}" type="text" name="harga_jual" id="harga_jual"
+                        <input value="{{ $barang->harga_jual }}" type="number" name="harga_jual" id="harga_jual"
                             class="form-control" required>
-                        <small id="error-harga-beli" class="error-text form-text text-danger"></small>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" data-dismiss="modal" class="btn btn-warning">Batal</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
+                        <small id="error-harga-jual" class="error-text form-text text-danger"></small>
                     </div>
                 </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-warning">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
             </div>
+        </div>
     </form>
     <script>
         $(document).ready(function () {
             $("#form-edit").validate({
                 rules: {
-                    barang_kode: { required: true, minlength: 3 },
-                    barang_nama: { required: true, minlength: 3 },
-                    kategori_id: { required: true },
-                    harga_beli: { required: true, number: true, min: 1 },
-                    harga_jual: { required: true, number: true, min: 1 }
+                    barang_kode: { required: true, minlength: 2, },
+                    barang_nama: { required: true, maxlength: 100 },
+                    harga_beli: { required: true },
+                    harga_jual: { required: true },
+                    kategori_id: { required: true }
                 },
-
                 submitHandler: function (form) {
                     $.ajax({
                         url: form.action,

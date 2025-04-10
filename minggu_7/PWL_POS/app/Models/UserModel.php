@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
+
 use App\Models\LevelModel;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use illuminate\Foundation\Auth\User as Authenticatable; // implementasi class aunthenticatable
 
-class UserModel extends Model
+class UserModel extends Authenticatable
 {
     use HasFactory;
 
@@ -18,18 +18,37 @@ class UserModel extends Model
 
     protected $fillable = [
         'username',
-        'password',
         'nama',
+        'password',
         'level_id',
         'created_at',
-        'updated_at'
-    ];
-    protected $hidden = ['password']; // jangan ditampilkan saat select
+        'updated_at'];
 
-    protected $casts = ['password' => 'hashed']; // casting password agar otomatis di hash
+    protected $hidden = ['password'];
+
+    protected $casts = [
+        'password' => 'hashed' // Laravel akan otomatis mengenkripsi password
+    ];
 
     public function level(): BelongsTo
     {
         return $this->belongsTo(LevelModel::class, 'level_id', 'level_id');
+    }
+
+    //mendapatkan nama role
+    public function getRoleName(): string
+    {
+        return $this->level->level_nama;
+    }
+
+    //cek apakah user memiliki role tertentu
+    public function hasRole($role): bool
+    {
+        return $this->level->level_kode == $role;
+    }
+
+    //mendapatkan kode role
+    public function getRole(){
+        return $this->level->level_kode;
     }
 }
