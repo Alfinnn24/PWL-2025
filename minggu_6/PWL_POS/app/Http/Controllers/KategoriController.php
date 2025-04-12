@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\KategoriModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\DataTables;
 
 class KategoriController extends Controller
 {
@@ -37,12 +37,9 @@ class KategoriController extends Controller
         return DataTables::of($categorys)
         ->addIndexColumn()
         ->addColumn('aksi', function ($kategori) {
-            $btn = '<a href="' . url('/kategori/' . $kategori->kategori_id) . '" class="btn btn-info btn-sm">Detail</a>';
-            $btn .= '<a href="' . url('/kategori/' . $kategori->kategori_id . '/edit') . '" class="btn mx-4 btn-warning btn-sm">Edt</a>';
-            $btn .= '<form class="d-inline-block" method="POST" action="' . url('/kategori/' . $kategori->kategori_id) . '">'
-                    . csrf_field() . method_field('DELETE') .  
-                    '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Apakah Anda yakin menghapus data ini?\');">Hapus</button>
-                    </form>';
+            $btn  = '<a href="' . url('/kategori/' . $kategori->kategori_id) . '" class="btn btn-info btn-sm">Detail</a> ';
+            $btn .= '<button onclick="modalAction(\'' . url('/kategori/' . $kategori->kategori_id .'/edit_ajax') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
+            $btn .= '<button onclick="modalAction(\'' . url('/kategori/' . $kategori->kategori_id .'/delete_ajax') . '\')"  class="btn btn-danger btn-sm">Hapus</button> ';
             return $btn; 
         })
         ->rawColumns(['aksi'])
@@ -114,7 +111,7 @@ class KategoriController extends Controller
 
     public function update(Request $request, string $id) {
         $request->validate([
-            'kategori_kode' => 'required|string|max:10|unique:m_kategori,kategori_kode',
+            'kategori_kode' => 'required|string|max:10|unique:m_kategori,kategori_kode,' . $id . ',kategori_id',
             'kategori_nama' => 'required|string|max:100',
         ]);
 
@@ -139,6 +136,9 @@ class KategoriController extends Controller
             return redirect('/kategori')->with('error', 'Data kategori gagal dihapus karena masih terdapat tabel lain yang terkait dengan data ini');
         }
     }
+
+    // New AJAX methods
+
     public function create_ajax() {
         return view('kategori.create_ajax');
     }
