@@ -151,6 +151,7 @@ Route::middleware(['auth'])->group(function () {
             Route::put('/{id}/update_ajax', [LevelController::class, 'update_ajax']);
             Route::get('/{id}/delete_ajax', [LevelController::class, 'confirm_ajax']);
             Route::delete('/{id}/delete_ajax', [LevelController::class, 'delete_ajax']);
+            Route::get('/{id}/show_ajax', [LevelController::class, 'show_ajax']);
         });
 
         //user
@@ -194,20 +195,25 @@ Route::middleware(['auth'])->group(function () {
         Route::middleware(['authorize:ADM,MNG'])->group(function () {
             //barang
             Route::group(['prefix' => 'barang'], function () {
-                Route::get('/', [BarangController::class, 'index']);
-                Route::post('/list', [BarangController::class, 'list']);
-                Route::get('/create', [BarangController::class, 'create']);
-                Route::post('/', [BarangController::class, 'store']);
-                Route::get('/create_ajax', [BarangController::class, 'create_ajax']);
-                Route::post('/ajax', [BarangController::class, 'store_ajax']);
-                Route::get('/{id}', [BarangController::class, 'show']);
-                Route::get('/{id}/edit', [BarangController::class, 'edit']);
-                Route::put('/{id}', [BarangController::class, 'update']);
-                Route::delete('/{id}', [BarangController::class, 'destroy']);
-                Route::get('/{id}/edit_ajax', [BarangController::class, 'edit_ajax']);
-                Route::put('/{id}/update_ajax', [BarangController::class, 'update_ajax']);
-                Route::get('/{id}/delete_ajax', [BarangController::class, 'confirm_ajax']);
-                Route::delete('/{id}/delete_ajax', [BarangController::class, 'delete_ajax']);
+                Route::get('/', [BarangController::class, 'index']); // menampilkan halaman awal barang
+                Route::post('/list', [BarangController::class, 'list']); // menampilkan data barang dalam json untuk datables
+                Route::get('/create', [BarangController::class, 'create']); // menampilkan halaman form tambah barang
+                Route::post('/', [BarangController::class, 'store']); // menyimpan data barang baru
+                Route::get('/create_ajax', [BarangController::class, 'create_ajax']); // Menampilkan halaman form tambah barang Ajax
+                Route::post('/ajax', [BarangController::class, 'store_ajax']); // Menampilkan data barang baru Ajax
+                Route::get('/{id}', [BarangController::class, 'show']); // menampilkan detail barang
+                Route::get('/{id}/edit', [BarangController::class, 'edit']); // menampilkan halaman form edit barang
+                Route::put('/{id}', [BarangController::class, 'update']); // menyimpan perubahan data barang
+                Route::delete('/{id}', [BarangController::class, 'destroy']); // menghapus data barang
+                Route::get('/{id}/edit_ajax', [BarangController::class, 'edit_ajax']); // Menampilkan halaman form edit barang Ajax
+                Route::put('/{id}/update_ajax', [BarangController::class, 'update_ajax']); // Menyimpan perubahan data barang Ajax
+                Route::get('/{id}/delete_ajax', [BarangController::class, 'confirm_ajax']); // Untuk tampilkan form confirm delete barang Ajax
+                Route::delete('/{id}/delete_ajax', [BarangController::class, 'delete_ajax']); // Untuk hapus data barang Ajax
+                Route::get('/{id}/show_ajax', [BarangController::class, 'show_ajax']); // Menampilkan detail barang dengan AJAX
+                Route::get('/import', [BarangController::class, 'import']); //ajax form upload excel
+                Route::post('/import_ajax', [BarangController::class, 'import_ajax']); //ajax import excel
+                Route::get('/export_excel', [BarangController::class, 'export_excel']); //ajax export excel
+                Route::get('/export_pdf', [BarangController::class, 'export_pdf']); //ajax export pdf
             });
 
             Route::middleware(['authorize:ADM,MNG'])->group(function () {
