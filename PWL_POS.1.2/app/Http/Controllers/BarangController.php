@@ -466,7 +466,7 @@ class BarangController extends Controller
 
         $sheet->setTitle('Data Barang'); // Set title sheet
 
-        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         $filename = "Data Barang " . date('Y-m-d H:i:s') . ".xlsx";
 
         // Header untuk download file Excel
