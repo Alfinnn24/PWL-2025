@@ -131,9 +131,22 @@
         <i class="fas fa-th-large"></i>
       </a>
     </li>
+    <!-- Profil User -->
+    <li class="nav-item dropdown">
+      <a class="nav-link" href="#" data-toggle="modal" data-target="#profileModal">
+        @php
+          $photo = Auth::user()->photo ? asset('storage/profile/' . Auth::user()->photo) : asset('default-avatar.png');
+          $nama = Auth::user()->nama;
+        @endphp
+        <img src="{{ $photo }}" alt="User Avatar" class="img-size-32 img-circle"
+             style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
+        <span class="ml-2">{{ $nama }}</span>
+      </a>
+    </li>
+
     <!-- Logout button -->
     <li class="nav-item">
-      <a href="#" class="nav-link" onclick="confirmLogout()">
+      <a class="nav-link" onclick="confirmLogout()" href="#">
         <button class="btn btn-danger btn-sm">
           <i class="fas fa-sign-out-alt"></i> Logout
         </button>
@@ -141,8 +154,36 @@
     </li>
   </ul>
 </nav>
-<!-- /.navbar -->
-<!-- SweetAlert Script -->
+
+<!-- Modal Profile -->
+<div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="profileModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form id="profileForm" action="{{ route('profile.updatePhoto') }}" method="POST" enctype="multipart/form-data">
+      @csrf
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="profileModalLabel">Profile Anda</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body text-center">
+          <img src="{{ $photo }}" alt="Foto Profil" class="img-circle mb-3" width="100" height="100" id="current-photo">
+          <h5>{{ $nama }}</h5>
+
+          <div class="form-group mt-3">
+            <input type="file" name="photo" accept="image/*" class="form-control-file" id="photo-input">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary btn-block">Simpan Perubahan</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- SweetAlert Logout -->
 <script src="{{ asset('adminlte/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
 <script>
   function confirmLogout() {
@@ -157,10 +198,39 @@
       cancelButtonText: 'Tidak, tetap di sini!'
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location.href = '{{ url('logout') }}'; // URL logout
+        window.location.href = '{{ url('logout') }}';
       }
     });
   }
 </script>
-</ul>
-</nav
+
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#profileForm').on('submit', function(e) {
+      e.preventDefault();
+
+      var formData = new FormData(this);
+
+      $.ajax({
+        url: '{{ route('profile.updatePhoto') }}',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+          if(response.success) {
+            $('#current-photo').attr('src', response.photo);
+            alert(response.message);
+            $('#profileModal').modal('hide');
+          }
+        },
+        error: function(response) {
+          alert('Terjadi kesalahan. Coba lagi.');
+        }
+      });
+    });
+  });
+</script>
+@endpush

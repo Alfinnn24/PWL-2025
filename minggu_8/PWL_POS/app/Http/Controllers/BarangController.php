@@ -454,7 +454,9 @@ class BarangController extends Controller
             $sheet->setCellValue('C' . $baris, $value->barang_nama);
             $sheet->setCellValue('D' . $baris, $value->harga_beli);
             $sheet->setCellValue('E' . $baris, $value->harga_jual);
-            $sheet->setCellValue('F' . $baris, $value->kategori->kategori_nama); // Ambil nama kategori
+            // $sheet->setCellValue('F' . $baris, $value->kategori->kategori_nama); // Ambil nama kategori
+            $sheet->setCellValue('F' . $baris, $value->kategori ? $value->kategori->kategori_nama : '-');
+
 
             $baris++;
             $no++;
@@ -483,21 +485,29 @@ class BarangController extends Controller
         exit;
     }
 
+   
     public function export_pdf()
     {
-        $barang = BarangModel::select('kategori_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual')
-            ->orderBy('kategori_id')
-            ->orderBy('barang_kode')
-            ->with('kategori')
-            ->get();
+        ini_set('max_execution_time', 300);
 
-        // use Barryvdh\DomPDF\Facade\Pdf;
-        $pdf = Pdf::loadView('barang.export_pdf', ['barang' => $barang]);
-        $pdf->setPaper('a4', 'portrait'); // set ukuran kertas dan orientasi
-        $pdf->setOption('isRemoteEnabled', true); // set true jika ada gambar dari url
+        $barang = BarangModel::select('kategori_id','barang_kode','barang_nama','harga_beli','harga_jual')
+                    ->orderBy('kategori_id')
+                    ->with('kategori')
+                    ->get();
+
+        $imagePath = public_path('/images/polinema.png');
+        $imageData = base64_encode(file_get_contents($imagePath));
+        $imageSrc = 'data:image/png;base64,' . $imageData;
+
+        $pdf = Pdf::loadView('barang.export_pdf', [
+            'barang' => $barang,
+            'logoSrc' => $imageSrc
+        ]);
+    
+        $pdf->setPaper('a4', 'portrait');
+        $pdf->setOption("isRemoteEnabled", true);
         $pdf->render();
 
-        return $pdf->stream('Data Barang ' . date('Y-m-d H:i:s') . '.pdf');
+        return $pdf->stream('Data Barang '.date('Y-m-d H:i:s').'.pdf');
     }
-
 }
