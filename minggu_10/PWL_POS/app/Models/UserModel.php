@@ -3,30 +3,43 @@
 namespace App\Models;
 
 
-use App\Models\LevelModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Tymon\JWTAuth\Contracts\Providers\JWT;
 
-class UserModel extends Authenticatable
+class UserModel extends Authenticatable implements JWTSubject
 {
     use HasFactory;
 
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+
     protected $table = 'm_user';
     protected $primaryKey = 'user_id';
-
     protected $fillable = [
+        'level_id',
         'username',
         'nama',
         'password',
-        'level_id',
-        'created_at',
-        'updated_at'];
+        'path_foto'
+    ];
 
-    protected $hidden = ['password'];
+    protected $hidden = [
+        'password'
+    ];
 
     protected $casts = [
-        'password' => 'hashed' // Laravel akan otomatis mengenkripsi password
+        'password' => 'hashed'
     ];
 
     public function level(): BelongsTo
